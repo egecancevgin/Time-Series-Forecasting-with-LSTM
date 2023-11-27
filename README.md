@@ -46,6 +46,9 @@ def main():
 if __name__ == '__main__':
     main()
 ```
+
 Çıktımız şu şekilde olacaktır:
+
 ![tsf_0](https://github.com/egecancevgin/Time-Series-Forecasting-with-LSTM/blob/main/TSF_1.png)
+
 
