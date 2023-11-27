@@ -65,9 +65,9 @@ def df_to_X_y(df, window_size=5):
     [[[1], [2], [3], [4], [5]]] [6]
     [[[2], [3], [4], [5], [6]]] [7]
     [[[3], [4], [5], [6], [7]]] [8]
-    :param df: Input dataframe
-    :param window_size: Number of units in the training set
-    :return: X and y
+  :param df: Input dataframe
+  :param window_size: Number of units in the training set
+  :return: X and y
   """
   df_as_np = df.to_numpy()
   X = []
@@ -82,3 +82,60 @@ def df_to_X_y(df, window_size=5):
 ```
 
 Bu şekilde verimiz örnek olarak 5 saat eğitilip bir saat etiket olarak kullanılacaktır.
+
+Şimdi veri işleme aşamasına geçelim, bu aşamada önce verimizi ufaltalım, her saat başı bir satırımız olsun. Normalde her 10 dakikada bir verimiz vardı ancak bu çok fazla.
+
+Bir datetime sütunu oluşturalım, ismi 'Date Time' olsun, hedef sütun olarak da 'T (degC)' sütununu seçelim, minik bir plot da oluşturalım, işlem bitince incelemek için.
+
+Deminki df_to_X_y() fonksiyonunu çağırıp içine hedef sütunu koyalım, çıktıyı da X1-y1 olarak ayarlayalım.
+Bundan sonra da eğitim-validasyon-test kümelerine ayrım yapalım, %85-%7-%7 gibi bir ayrım olacaktır.
+
+Sonra bu parçaları döndürelim ve bir görüntüleme olsun diye print de ettirelim:
+``` python
+def preprocessing(df):
+  """
+  Preprocesses the dataframe
+  :return: Processed dataframe, train-validation-test sets
+  """
+  # Triming the data by choosing only once an hour
+  df = df[5::6]
+
+  # Creating a datetime column by using the index
+  df.index = pd.to_datetime(df['Date Time'], format='%d.%m.%Y %H:%M:%S')
+
+  # Temp is the target column, let's take a look at it
+  temp = df['T (degC)']
+  temp.plot()
+
+  # Splitting the time series to training and the target label
+  WINDOW_SIZE = 5
+  X1, y1 = df_to_X_y(temp, WINDOW_SIZE)
+
+  # Splitting into training-validation-test sets %85-%7-%7
+  X_train1, y_train1 = X1[:60000], y1[:60000]
+  X_val1, y_val1 = X1[60000:65000], y1[60000:65000]
+  X_test1, y_test1 = X1[65000:], y1[65000:]
+
+  # Let's take a look at the splits
+  print(
+      X_train1.shape, y_train1.shape, X_val1.shape,
+      y_val1.shape, X_test1.shape, y_test1.shape
+  )
+
+  return X_train1, y_train1, X_val1, y_val1, X_test1, y_test1
+```
+
+Kontrol etmek için main.py dosyamızdaki main() fonksiyonunun içinde çağıralım ve inceleyelim:
+``` python
+def main():
+    my_df = read_file()
+    #print(my_csv.head(), '\n\n')
+    #print(my_csv.info(), '\n\n')
+    #print(my_csv.describe(), '\n\n')
+    Xt1, yt1, Xv1, yv1, Xts1, yts1 = preprocessing(my_df)
+
+
+if __name__ == '__main__':
+    main()
+```
+
