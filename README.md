@@ -47,4 +47,5 @@ if __name__ == '__main__':
     main()
 ```
 Çıktımız şu şekilde olacaktır:
-![tsf_0](https://github.com/egecancevgin/TTelekom-Bulut-Bilisim-Projesi/blob/49e2dc586a26aa34ab34a4392315a2b84575e2a5/elastic_0.png)
+![tsf_0](https://github.com/egecancevgin/Time-Series-Forecasting-with-LSTM/blob/main/TSF_1.png)
+
