@@ -13,6 +13,12 @@ import tensorflow as tf
 import os
 import pandas as pd
 import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import *
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.losses import MeanSquaredError
+from tensorflow.keras.metrics import RootMeanSquaredError
+from tensorflow.keras.optimizers import Adam
 ```
 
 Aynı dosya içerisinde veri setimizi okuma fonksiyonu oluşturalım:
@@ -51,4 +57,28 @@ if __name__ == '__main__':
 
 ![tsf_0](https://github.com/egecancevgin/Time-Series-Forecasting-with-LSTM/blob/main/TSF_1.png)
 
+Fonksiyonlar dosyasına geri dönelim ve veri işlerken kullanacağımız train-test split işlemini gerçekleştirelim:
+``` python
+def df_to_X_y(df, window_size=5):
+  """
+  Convert the dataframe into training X and target y sets like this:
+    [[[1], [2], [3], [4], [5]]] [6]
+    [[[2], [3], [4], [5], [6]]] [7]
+    [[[3], [4], [5], [6], [7]]] [8]
+    :param df: Input dataframe
+    :param window_size: Number of units in the training set
+    :return: X and y
+  """
+  df_as_np = df.to_numpy()
+  X = []
+  y = []
+  for i in range(len(df_as_np) - window_size):
+    row = [[a] for a in df_as_np[i: i+window_size]]
+    X.append(row)
+    label = df_as_np[i + window_size]
+    y.append(label)
 
+  return np.array(X), np.array(y)
+```
+
+Bu şekilde verimiz örnek olarak 5 saat eğitilip bir saat etiket olarak kullanılacaktır.
